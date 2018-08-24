@@ -104,3 +104,7 @@ class TokenEnc(object):
         print('Generate salt')
         self.client_salt = Random.get_random_bytes(16).hex()
         return self.client_salt
+
+    def exchange_session_key(self):
+        print('Exchange session key')
+        return b'jdev/sys/keyexchange/'+self.client_session_key
