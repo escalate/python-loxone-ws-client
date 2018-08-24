@@ -58,6 +58,9 @@ if __name__ == '__main__':
         session_key = token_enc.generate_session_key()
         print(session_key)
 
+        salt = token_enc.generate_salt()
+        print(salt)
+
         print('Start WebSocket connection')
         ws_factory = WebSocketClientFactory('ws://{host}:{port}/ws/rfc6455'.format(
             host=MINISERVER_HOST,

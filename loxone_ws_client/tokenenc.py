@@ -20,6 +20,7 @@ class TokenEnc(object):
         self.client_aes_key = None
         self.client_aes_iv = None
         self.client_session_key = None
+        self.client_salt = None
 
     def test_connection(self):
         print('Ensure the MiniServer is reachable')
@@ -98,3 +99,8 @@ class TokenEnc(object):
         enc_session_key = cipher_rsa.encrypt(session_key)
         self.client_session_key = b64encode(enc_session_key)
         return self.client_session_key
+
+    def generate_salt(self):
+        print('Generate salt')
+        self.client_salt = Random.get_random_bytes(16).hex()
+        return self.client_salt
