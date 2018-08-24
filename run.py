@@ -7,7 +7,7 @@ from os import environ
 from autobahn.asyncio.websocket import (WebSocketClientFactory,
                                         WebSocketClientProtocol)
 
-from loxone_ws_client import TokenEnc
+from loxone_ws_client import MessageHeader, TokenEnc
 
 MINISERVER_HOST = environ.get('MINISERVER_HOST', '127.0.0.1')
 MINISERVER_PORT = environ.get('MINISERVER_PORT', 80)
@@ -53,6 +53,9 @@ class LoxoneClientProtocol(WebSocketClientProtocol):
     def onMessage(self, payload, isBinary):
         if isBinary:
             print("Binary message received: {0} bytes".format(len(payload)))
+            header = MessageHeader(payload)
+            print('Identifier ' + str(header.identifier))
+            print('Payload length: ' + str(header.payload_length))
         else:
             print("Text message received: {0}".format(payload.decode('utf8')))
 
