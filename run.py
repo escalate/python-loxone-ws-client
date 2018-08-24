@@ -52,6 +52,9 @@ if __name__ == '__main__':
         aes_key = token_enc.generate_aes256_key()
         print(aes_key)
 
+        aes_iv = token_enc.generate_aes_iv()
+        print(aes_iv)
+
         print('Start WebSocket connection')
         ws_factory = WebSocketClientFactory('ws://{miniserver_host}:{miniserver_port}/ws/rfc6455'.format(
             miniserver_host=MINISERVER_HOST,

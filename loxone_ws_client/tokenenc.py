@@ -16,6 +16,7 @@ class TokenEnc(object):
         self.miniserver_port = kwargs.get('miniserver_port')
         self.miniserver_public_key = None
         self.client_aes_key = None
+        self.client_aes_iv = None
 
     def test_connection(self):
         print('Ensure the MiniServer is reachable')
@@ -80,3 +81,8 @@ class TokenEnc(object):
         cipher_aes = AES.new(key, AES.MODE_CBC, iv)
         self.client_aes_key = cipher_aes.encrypt(secret)
         return self.client_aes_key
+
+    def generate_aes_iv(self):
+        print('Generate random AES IV (16 byte)')
+        self.client_aes_iv = Random.get_random_bytes(16)
+        return self.client_aes_iv
