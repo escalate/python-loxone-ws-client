@@ -38,38 +38,36 @@ if __name__ == '__main__':
     token_enc = TokenEnc(miniserver_host=MINISERVER_HOST,
                          miniserver_port=MINISERVER_PORT)
 
-    if token_enc.test_connection():
+    snr = token_enc.get_miniserver_snr()
+    print(snr)
 
-        snr = token_enc.get_miniserver_snr()
-        print(snr)
+    version = token_enc.get_miniserver_version()
+    print(version)
 
-        version = token_enc.get_miniserver_version()
-        print(version)
+    public_key = token_enc.get_public_key()
+    print(public_key)
 
-        public_key = token_enc.get_public_key()
-        print(public_key)
+    aes_key = token_enc.generate_aes256_key()
+    print(aes_key)
 
-        aes_key = token_enc.generate_aes256_key()
-        print(aes_key)
+    aes_iv = token_enc.generate_aes_iv()
+    print(aes_iv)
 
-        aes_iv = token_enc.generate_aes_iv()
-        print(aes_iv)
+    session_key = token_enc.generate_session_key()
+    print(session_key)
 
-        session_key = token_enc.generate_session_key()
-        print(session_key)
+    salt = token_enc.generate_salt()
+    print(salt)
 
-        salt = token_enc.generate_salt()
-        print(salt)
+    print('Start WebSocket connection')
+    ws_factory = WebSocketClientFactory('ws://{host}:{port}/ws/rfc6455'.format(
+        host=MINISERVER_HOST,
+        port=MINISERVER_PORT),
+        protocols=['remotecontrol'])
+    ws_factory.protocol = LoxoneClientProtocol
 
-        print('Start WebSocket connection')
-        ws_factory = WebSocketClientFactory('ws://{host}:{port}/ws/rfc6455'.format(
-            host=MINISERVER_HOST,
-            port=MINISERVER_PORT),
-            protocols=['remotecontrol'])
-        ws_factory.protocol = LoxoneClientProtocol
-
-        loop = asyncio.get_event_loop()
-        coro = loop.create_connection(ws_factory, MINISERVER_HOST, MINISERVER_PORT)
-        loop.run_until_complete(coro)
-        loop.run_forever()
-        loop.close()
+    loop = asyncio.get_event_loop()
+    coro = loop.create_connection(ws_factory, MINISERVER_HOST, MINISERVER_PORT)
+    loop.run_until_complete(coro)
+    loop.run_forever()
+    loop.close()
