@@ -13,11 +13,11 @@ class TokenEnc(object):
 
     def test_connection(self):
         print('Ensure the MiniServer is reachable')
-        req_api = get('http://{host}:{port}/jdev/cfg/api'.format(
+        req = get('http://{host}:{port}/jdev/cfg/api'.format(
             host=self.miniserver_host,
             port=self.miniserver_port),
             timeout=self.request_timeout)
-        if (req_api.status_code == codes.ok):
+        if (req.status_code == codes.ok):
             return True
         else:
             return False
