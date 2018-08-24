@@ -43,6 +43,9 @@ if __name__ == '__main__':
         snr = token_enc.get_miniserver_snr()
         print(snr)
 
+        version = token_enc.get_miniserver_version()
+        print(version)
+
         print('Start WebSocket connection')
         ws_factory = WebSocketClientFactory('ws://{miniserver_host}:{miniserver_port}/ws/rfc6455'.format(
             miniserver_host=MINISERVER_HOST,

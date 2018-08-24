@@ -38,3 +38,14 @@ class TokenEnc(object):
             miniserver_api = json.loads(self._fix_json_data(
                 req.json().get('LL').get('value')))
             return miniserver_api.get('snr')
+
+    def get_miniserver_version(self):
+        print('Get MiniServer version')
+        req = get('http://{host}:{port}/jdev/cfg/api'.format(
+            host=self.miniserver_host,
+            port=self.miniserver_port),
+            timeout=self.request_timeout)
+        if (req.status_code == codes.ok):
+            miniserver_api = json.loads(self._fix_json_data(
+                req.json().get('LL').get('value')))
+            return miniserver_api.get('version')
