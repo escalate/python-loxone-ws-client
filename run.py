@@ -7,7 +7,7 @@ from os import environ
 from autobahn.asyncio.websocket import (WebSocketClientFactory,
                                         WebSocketClientProtocol)
 
-from loxone_ws_client import MessageHeader, TokenEnc
+from loxone_ws_client import Message, MessageHeader, TokenEnc
 
 MINISERVER_HOST = environ.get('MINISERVER_HOST', '127.0.0.1')
 MINISERVER_PORT = environ.get('MINISERVER_PORT', 80)
@@ -16,6 +16,7 @@ MINISERVER_PORT = environ.get('MINISERVER_PORT', 80)
 class LoxoneClientProtocol(WebSocketClientProtocol):
 
     token_enc = TokenEnc()
+    next_msg_header = None
 
     def onConnect(self, response):
         print("Server connected: {0}".format(response.peer))
@@ -53,11 +54,18 @@ class LoxoneClientProtocol(WebSocketClientProtocol):
     def onMessage(self, payload, isBinary):
         if isBinary:
             print("Binary message received: {0} bytes".format(len(payload)))
-            header = MessageHeader(payload)
-            print('Identifier ' + str(header.identifier))
-            print('Payload length: ' + str(header.payload_length))
+            self.next_msg_header = MessageHeader(payload)
+            print('Identifier ' + str(self.next_msg_header.identifier))
+            print('Payload length: ' + str(self.next_msg_header.payload_length))
         else:
             print("Text message received: {0}".format(payload.decode('utf8')))
+            if self.next_msg_header.payload_length == len(payload):
+                msg = Message(payload)
+                print('Code: ' + msg.code)
+                print('Control: ' + msg.control)
+                print('Value: ' + msg.value)
+            else:
+                print('ERROR: Promised length of payload does not match')
 
     def onClose(self, wasClean, code, reason):
         print("WebSocket connection closed: {0}".format(reason))
