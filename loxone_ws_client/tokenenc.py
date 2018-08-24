@@ -60,7 +60,7 @@ class TokenEnc(object):
             return miniserver_api.get('version')
 
     @staticmethod
-    def fix_pem_certificate(certificate):
+    def _fix_pem_certificate(certificate):
         return certificate \
             .replace('-----BEGIN CERTIFICATE-----', "-----BEGIN CERTIFICATE-----\n")  \
             .replace('-----END CERTIFICATE-----', "\n-----END CERTIFICATE-----")
@@ -73,7 +73,7 @@ class TokenEnc(object):
             port=self.miniserver_port),
             timeout=self.request_timeout)
         if (req.status_code == codes.ok):
-            self.miniserver_public_key = self.fix_pem_certificate(
+            self.miniserver_public_key = self._fix_pem_certificate(
                 req.json().get('LL').get('value'))
             return self.miniserver_public_key
 
