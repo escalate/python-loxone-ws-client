@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import json
+from base64 import b64encode
 
 from Crypto import Random
-from Crypto.Cipher import AES
+from Crypto.Cipher import AES, PKCS1_v1_5
+from Crypto.PublicKey import RSA
 from requests import codes, get
 
 
@@ -17,6 +19,7 @@ class TokenEnc(object):
         self.miniserver_public_key = None
         self.client_aes_key = None
         self.client_aes_iv = None
+        self.client_session_key = None
 
     def test_connection(self):
         print('Ensure the MiniServer is reachable')
@@ -86,3 +89,12 @@ class TokenEnc(object):
         print('Generate random AES IV (16 byte)')
         self.client_aes_iv = Random.get_random_bytes(16)
         return self.client_aes_iv
+
+    def generate_session_key(self):
+        print('RSA encrypt the "AES-256 key + AES IV" with the MiniServer public key')
+        rsa_key = RSA.importKey(self.miniserver_public_key)
+        cipher_rsa = PKCS1_v1_5.new(rsa_key)
+        session_key = self.client_aes_key+b':'+self.client_aes_iv
+        enc_session_key = cipher_rsa.encrypt(session_key)
+        self.client_session_key = b64encode(enc_session_key)
+        return self.client_session_key
