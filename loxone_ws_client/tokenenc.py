@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from requests import get, codes
+import json
+
+from requests import codes, get
 
 
 class TokenEnc(object):
@@ -21,3 +23,18 @@ class TokenEnc(object):
             return True
         else:
             return False
+
+    @staticmethod
+    def _fix_json_data(data):
+        return data.replace('\'', '"')
+
+    def get_miniserver_snr(self):
+        print('Get MiniServer serial number')
+        req = get('http://{host}:{port}/jdev/cfg/api'.format(
+            host=self.miniserver_host,
+            port=self.miniserver_port),
+            timeout=self.request_timeout)
+        if (req.status_code == codes.ok):
+            miniserver_api = json.loads(self._fix_json_data(
+                req.json().get('LL').get('value')))
+            return miniserver_api.get('snr')
