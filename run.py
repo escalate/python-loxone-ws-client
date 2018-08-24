@@ -56,9 +56,9 @@ if __name__ == '__main__':
         print(aes_iv)
 
         print('Start WebSocket connection')
-        ws_factory = WebSocketClientFactory('ws://{miniserver_host}:{miniserver_port}/ws/rfc6455'.format(
-            miniserver_host=MINISERVER_HOST,
-            miniserver_port=MINISERVER_PORT),
+        ws_factory = WebSocketClientFactory('ws://{host}:{port}/ws/rfc6455'.format(
+            host=MINISERVER_HOST,
+            port=MINISERVER_PORT),
             protocols=['remotecontrol'])
         ws_factory.protocol = LoxoneClientProtocol
 
