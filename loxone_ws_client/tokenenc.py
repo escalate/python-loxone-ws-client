@@ -92,7 +92,7 @@ class TokenEnc(object):
         return self.client_aes_iv
 
     def generate_session_key(self):
-        print('RSA encrypt the "AES-256 key + AES IV" with the MiniServer public key')
+        print('Generate session key by RSA encrypt the "AES-256 key + AES IV" with the MiniServer public key')
         rsa_key = RSA.importKey(self.miniserver_public_key)
         cipher_rsa = PKCS1_v1_5.new(rsa_key)
         session_key = self.client_aes_key+b':'+self.client_aes_iv
