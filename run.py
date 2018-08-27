@@ -11,6 +11,7 @@ from loxone_ws_client import Message, MessageHeader, TokenEnc
 
 MINISERVER_HOST = environ.get('MINISERVER_HOST', '127.0.0.1')
 MINISERVER_PORT = environ.get('MINISERVER_PORT', 80)
+MINISERVER_USERNAME = environ.get('MINISERVER_USERNAME', 'admin')
 
 
 class LoxoneClientProtocol(WebSocketClientProtocol):
@@ -25,6 +26,7 @@ class LoxoneClientProtocol(WebSocketClientProtocol):
         connection_peer = response.peer.split(':')
         self.token_enc.miniserver_host = connection_peer[1]
         self.token_enc.miniserver_port = connection_peer[2]
+        self.token_enc.miniserver_username = MINISERVER_USERNAME
 
     def onOpen(self):
         print("WebSocket connection open.")
@@ -50,6 +52,7 @@ class LoxoneClientProtocol(WebSocketClientProtocol):
         print(salt)
 
         self.sendMessage(self.token_enc.exchange_session_key())
+        self.sendMessage(self.token_enc.get_key_and_salt())
 
     def onMessage(self, payload, isBinary):
         if isBinary:
@@ -70,6 +73,10 @@ class LoxoneClientProtocol(WebSocketClientProtocol):
                     print('Keyexchange succeeded')
                 if msg.control_type == 'keyexchange' and msg.code != '200':
                     print('Keyexchange failed with status code {0}'.format(msg.code))
+                if msg.control_type == 'getkey2' and msg.code == 200:
+                    print('Salt and key received for user')
+                if msg.control_type == 'getkey2' and msg.code != 200:
+                    print('Salt and key not received for user (status code {0})'.format(msg.code))
                 if msg.control_type == 'unknown':
                     print('Unknown control ' + msg.control)
             else:

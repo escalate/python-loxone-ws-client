@@ -21,5 +21,7 @@ class Message(object):
             self.control_type = 'auth'
         elif match(r'^j?dev\/sys\/keyexchange\/', self.control) is not None:
             self.control_type = 'keyexchange'
+        elif match(r'^j?dev\/sys\/getkey2\/', self.control) is not None:
+            self.control_type = 'getkey2'
         else:
             self.control_type = 'unknown'

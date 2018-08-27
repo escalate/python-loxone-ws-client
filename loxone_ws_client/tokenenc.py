@@ -16,6 +16,7 @@ class TokenEnc(object):
         self.request_timeout = kwargs.get('request_timeout', 5)
         self.miniserver_host = kwargs.get('miniserver_host')
         self.miniserver_port = kwargs.get('miniserver_port')
+        self.miniserver_username = kwargs.get('miniserver_username')
         self.miniserver_public_key = None
         self.client_aes_key = None
         self.client_aes_iv = None
@@ -108,3 +109,7 @@ class TokenEnc(object):
     def exchange_session_key(self):
         print('Exchange session key')
         return b'jdev/sys/keyexchange/'+self.client_session_key
+
+    def get_key_and_salt(self):
+        print('Get key and salt for user')
+        return 'jdev/sys/getkey2/{0}'.format(self.miniserver_username).encode('utf8')
