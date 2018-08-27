@@ -10,7 +10,10 @@ class Message(object):
     def __init__(self, payload):
         self._raw_data = loads(payload.decode('utf8'))
         self.data = self._raw_data.get('LL')
-        self.code = self.data.get('Code', None)
+        if self.data.get('Code', None) is not None:
+            self.code = int(self.data.get('Code', None))
+        if self.data.get('code', None) is not None:
+            self.code = int(self.data.get('code', None))
         self.control = self.data.get('control', None)
         self.value = self.data.get('value', None)
 
