@@ -64,9 +64,9 @@ class LoxoneClientProtocol(WebSocketClientProtocol):
             print("Text message received: {0}".format(payload.decode('utf8')))
             if self.next_msg_header.payload_length == len(payload):
                 msg = Message(payload)
-                print('Code: ' + msg.code)
-                print('Control: ' + msg.control)
-                print('Value: ' + msg.value)
+                print('Code: {0}'.format(msg.code))
+                print('Control: {0}'.format(msg.control))
+                print('Value: {0}'.format(msg.value))
                 if msg.control_type == 'auth' and msg.code == 420:
                     print('Authentication failed (status code {0})'.format(msg.code))
                 if msg.control_type == 'keyexchange' and msg.code == 200:
