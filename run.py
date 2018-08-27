@@ -68,11 +68,11 @@ class LoxoneClientProtocol(WebSocketClientProtocol):
                 print('Control: ' + msg.control)
                 print('Value: ' + msg.value)
                 if msg.control_type == 'auth' and msg.code == '420':
-                    print('Authentication failed with status code {0}'.format(msg.code))
+                    print('Authentication failed (status code {0})'.format(msg.code))
                 if msg.control_type == 'keyexchange' and msg.code == '200':
                     print('Keyexchange succeeded')
                 if msg.control_type == 'keyexchange' and msg.code != '200':
-                    print('Keyexchange failed with status code {0}'.format(msg.code))
+                    print('Keyexchange failed (status code {0})'.format(msg.code))
                 if msg.control_type == 'getkey2' and msg.code == 200:
                     print('Salt and key received for user')
                 if msg.control_type == 'getkey2' and msg.code != 200:
