@@ -75,6 +75,8 @@ class LoxoneClientProtocol(WebSocketClientProtocol):
                     print('Keyexchange failed (status code {0})'.format(msg.code))
                 if msg.control_type == 'getkey2' and msg.code == 200:
                     print('Salt and key received for user')
+                    self.token_enc.miniserver_user_key = msg.value.get('key')
+                    self.token_enc.miniserver_user_salt = msg.value.get('salt')
                 if msg.control_type == 'getkey2' and msg.code != 200:
                     print('Salt and key not received for user (status code {0})'.format(msg.code))
                 if msg.control_type == 'unknown':
