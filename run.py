@@ -20,8 +20,8 @@ class LoxoneClientProtocol(WebSocketClientProtocol):
     next_msg_header = None
 
     def onConnect(self, response):
-        print("Server connected: {0}".format(response.peer))
-        print("Version: {0}".format(response.version))
+        print('Server connected: {0}'.format(response.peer))
+        print('Version: {0}'.format(response.version))
         print(response)
         connection_peer = response.peer.split(':')
         self.token_enc.miniserver_host = connection_peer[1]
@@ -29,7 +29,7 @@ class LoxoneClientProtocol(WebSocketClientProtocol):
         self.token_enc.miniserver_username = MINISERVER_USERNAME
 
     def onOpen(self):
-        print("WebSocket connection open.")
+        print('WebSocket connection open.')
         snr = self.token_enc.get_miniserver_snr()
         print(snr)
 
@@ -56,12 +56,12 @@ class LoxoneClientProtocol(WebSocketClientProtocol):
 
     def onMessage(self, payload, isBinary):
         if isBinary:
-            print("Binary message received: {0} bytes".format(len(payload)))
+            print('Binary message received: {0} bytes'.format(len(payload)))
             self.next_msg_header = MessageHeader(payload)
             print('Identifier ' + str(self.next_msg_header.identifier))
             print('Payload length: ' + str(self.next_msg_header.payload_length))
         else:
-            print("Text message received: {0}".format(payload.decode('utf8')))
+            print('Text message received: {0}'.format(payload.decode('utf8')))
             if self.next_msg_header.payload_length == len(payload):
                 msg = Message(payload)
                 print('Code: {0}'.format(msg.code))
@@ -85,7 +85,7 @@ class LoxoneClientProtocol(WebSocketClientProtocol):
                 print('ERROR: Promised length of payload does not match')
 
     def onClose(self, wasClean, code, reason):
-        print("WebSocket connection closed: {0}".format(reason))
+        print('WebSocket connection closed: {0}'.format(reason))
 
 
 if __name__ == '__main__':
