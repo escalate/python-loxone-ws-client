@@ -134,4 +134,4 @@ class TokenEnc(object):
 
     def get_key_and_salt(self):
         print('Get key and salt for user')
-        return 'jdev/sys/getkey2/{0}'.format(self.miniserver_username).encode('utf8')
+        return 'jdev/sys/getkey2/{0}'.format(self.miniserver_username)

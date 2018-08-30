@@ -52,7 +52,7 @@ class LoxoneClientProtocol(WebSocketClientProtocol):
         print(salt)
 
         self.sendMessage(self.token_enc.exchange_session_key())
-        self.sendMessage(self.token_enc.get_key_and_salt())
+        self.sendMessage(self.token_enc.encrypt_command(self.token_enc.get_key_and_salt()))
 
     def onMessage(self, payload, isBinary):
         if isBinary:
