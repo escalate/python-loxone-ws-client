@@ -67,6 +67,7 @@ class LoxoneClientProtocol(WebSocketClientProtocol):
                 msg = Message(payload)
                 print('Code: {0}'.format(msg.code))
                 print('Control: {0}'.format(msg.control))
+                print('Control type: {0}'.format(msg.control_type))
                 print('Value: {0}'.format(msg.value))
                 if msg.control_type == 'auth' and msg.code == 420:
                     print('Authentication failed (status code {0})'.format(msg.code))
