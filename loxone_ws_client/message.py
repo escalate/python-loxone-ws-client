@@ -23,6 +23,8 @@ class Message(object):
             self.control_type = 'keyexchange'
         elif match(r'^j?dev\/sys\/getkey2\/', self.control) is not None:
             self.control_type = 'getkey2'
+        elif match(r'^j?dev\/sys\/gettoken\/', self.control) is not None:
+            self.control_type = 'gettoken'
         elif match(r'^j?dev\/sys\/enc\/', self.control) is not None:
             self.control_type = 'enc'
         else:

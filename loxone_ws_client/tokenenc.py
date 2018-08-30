@@ -28,6 +28,11 @@ class TokenEnc(object):
         self.client_aes_iv = None
         self.client_session_key = None
         self.client_salt = None
+        self.client_token = None
+        self.client_token_key = None
+        self.client_token_valid_until = None
+        self.client_token_rights = None
+        self.client_token_unsecure_pass = None
 
     def test_connection(self):
         print('Ensure the MiniServer is reachable')
@@ -155,3 +160,17 @@ class TokenEnc(object):
             self.miniserver_username,
             pw_hash).encode('utf8'))
         return hash_hmac.hexdigest()
+
+    def get_token(self):
+        print('Get token')
+        credential_hash = self.hash_credential()
+        permission = 2
+        uuid = 'd8432922-c1ce-480a-8a01669ef2c02c20'
+        info = 'python-loxone-ws-client'
+        test = 'jdev/sys/gettoken/{0}/{1}/{2}/{3}/{4}'.format(
+            credential_hash,
+            self.miniserver_username,
+            permission,
+            uuid,
+            utils.quote(info))
+        return test
