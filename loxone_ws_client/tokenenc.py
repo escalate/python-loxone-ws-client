@@ -7,6 +7,7 @@ from base64 import b64encode
 from Crypto import Random
 from Crypto.Cipher import AES, PKCS1_v1_5
 from Crypto.PublicKey import RSA
+from Crypto.Util.py3compat import bchr
 from requests import codes, get
 
 
@@ -111,6 +112,12 @@ class TokenEnc(object):
     def exchange_session_key(self):
         print('Exchange session key')
         return b'jdev/sys/keyexchange/'+self.client_session_key
+
+    @staticmethod
+    def zero_byte_paddding(data_to_pad, block_size):
+        padding_len = block_size-len(data_to_pad) % block_size
+        padding = bchr(0)*padding_len
+        return data_to_pad + padding
 
     def get_key_and_salt(self):
         print('Get key and salt for user')
