@@ -119,6 +119,19 @@ class TokenEnc(object):
         padding = bchr(0)*padding_len
         return data_to_pad + padding
 
+    def encrypt_command(self, cmd):
+        print('Encrypt command')
+        if type(cmd) == bytes:
+            cmd = cmd.decode('utf8')
+        cipher_aes = AES.new(self.client_aes_key,
+                             AES.MODE_CBC,
+                             self.client_aes_iv)
+        enc_cmd_part = cipher_aes.encrypt(self.zero_byte_paddding(
+            'salt/{0}/{1}'.format(self.client_salt, cmd).encode('utf8'), AES.block_size))
+        enc_cmd = 'jdev/sys/enc/{0}'.format(
+            utils.quote(b64encode(enc_cmd_part))).encode('utf8')
+        return enc_cmd
+
     def get_key_and_salt(self):
         print('Get key and salt for user')
         return 'jdev/sys/getkey2/{0}'.format(self.miniserver_username).encode('utf8')
