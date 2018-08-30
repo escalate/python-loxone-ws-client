@@ -40,7 +40,7 @@ class TokenEnc(object):
             host=self.miniserver_host,
             port=self.miniserver_port),
             timeout=self.request_timeout)
-        if (req.status_code == codes.ok):
+        if (req.status_code == codes.ok):  # pylint: disable=E1101
             return True
         else:
             return False
@@ -55,7 +55,7 @@ class TokenEnc(object):
             host=self.miniserver_host,
             port=self.miniserver_port),
             timeout=self.request_timeout)
-        if (req.status_code == codes.ok):
+        if (req.status_code == codes.ok):  # pylint: disable=E1101
             miniserver_api = json.loads(self._fix_json_data(
                 req.json().get('LL').get('value')))
             return miniserver_api.get('snr')
@@ -66,7 +66,7 @@ class TokenEnc(object):
             host=self.miniserver_host,
             port=self.miniserver_port),
             timeout=self.request_timeout)
-        if (req.status_code == codes.ok):
+        if (req.status_code == codes.ok):  # pylint: disable=E1101
             miniserver_api = json.loads(self._fix_json_data(
                 req.json().get('LL').get('value')))
             return miniserver_api.get('version')
@@ -84,7 +84,7 @@ class TokenEnc(object):
             host=self.miniserver_host,
             port=self.miniserver_port),
             timeout=self.request_timeout)
-        if (req.status_code == codes.ok):
+        if (req.status_code == codes.ok):  # pylint: disable=E1101
             self.miniserver_public_key = self._fix_pem_certificate(
                 req.json().get('LL').get('value'))
             return self.miniserver_public_key
