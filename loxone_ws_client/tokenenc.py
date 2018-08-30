@@ -6,6 +6,7 @@ from base64 import b64encode
 
 from Crypto import Random
 from Crypto.Cipher import AES, PKCS1_v1_5
+from Crypto.Hash import SHA1
 from Crypto.PublicKey import RSA
 from Crypto.Util.py3compat import bchr
 from requests import codes, get, utils
@@ -135,3 +136,11 @@ class TokenEnc(object):
     def get_key_and_salt(self):
         print('Get key and salt for user')
         return 'jdev/sys/getkey2/{0}'.format(self.miniserver_username)
+
+    def hash_password(self):
+        print('Hash user password')
+        hash_sha = SHA1.new()
+        hash_sha.update('{0}:{1}'.format(
+            self.miniserver_password,
+            self.miniserver_user_salt).encode('utf8'))
+        return hash_sha.hexdigest().upper()
