@@ -12,7 +12,7 @@ from loxone_ws_client import Message, MessageHeader, TokenEnc
 MINISERVER_HOST = environ.get('MINISERVER_HOST', '127.0.0.1')
 MINISERVER_PORT = environ.get('MINISERVER_PORT', 80)
 MINISERVER_USERNAME = environ.get('MINISERVER_USERNAME', 'admin')
-
+MINISERVER_PASSWORD = environ.get('MINISERVER_PASSWORD', 'admin')
 
 class LoxoneClientProtocol(WebSocketClientProtocol):
 
@@ -27,6 +27,7 @@ class LoxoneClientProtocol(WebSocketClientProtocol):
         self.token_enc.miniserver_host = connection_peer[1]
         self.token_enc.miniserver_port = connection_peer[2]
         self.token_enc.miniserver_username = MINISERVER_USERNAME
+        self.token_enc.miniserver_password = MINISERVER_PASSWORD
 
     def onOpen(self):
         print('WebSocket connection open.')

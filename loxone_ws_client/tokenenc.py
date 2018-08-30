@@ -19,6 +19,7 @@ class TokenEnc(object):
         self.miniserver_host = kwargs.get('miniserver_host')
         self.miniserver_port = kwargs.get('miniserver_port')
         self.miniserver_username = kwargs.get('miniserver_username')
+        self.miniserver_password = kwargs.get('miniserver_password')
         self.miniserver_public_key = None
         self.miniserver_user_key = None
         self.miniserver_user_salt = None
