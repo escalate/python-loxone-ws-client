@@ -3,10 +3,11 @@
 
 import json
 from base64 import b64encode
+from binascii import a2b_hex
 
 from Crypto import Random
 from Crypto.Cipher import AES, PKCS1_v1_5
-from Crypto.Hash import SHA1
+from Crypto.Hash import HMAC, SHA1
 from Crypto.PublicKey import RSA
 from Crypto.Util.py3compat import bchr
 from requests import codes, get, utils
@@ -145,3 +146,12 @@ class TokenEnc(object):
             self.miniserver_password,
             self.miniserver_user_salt).encode('utf8'))
         return hash_sha.hexdigest().upper()
+
+    def hash_credential(self):
+        print('Hash credential')
+        pw_hash = self.hash_password()
+        hash_hmac = HMAC.new(a2b_hex(self.miniserver_user_key), digestmod=SHA1)
+        hash_hmac.update('{0}:{1}'.format(
+            self.miniserver_username,
+            pw_hash).encode('utf8'))
+        return hash_hmac.hexdigest()
