@@ -8,7 +8,7 @@ from Crypto import Random
 from Crypto.Cipher import AES, PKCS1_v1_5
 from Crypto.PublicKey import RSA
 from Crypto.Util.py3compat import bchr
-from requests import codes, get
+from requests import codes, get, utils
 
 
 class TokenEnc(object):
@@ -106,7 +106,7 @@ class TokenEnc(object):
 
     def generate_salt(self):
         print('Generate salt')
-        self.client_salt = Random.get_random_bytes(16).hex()
+        self.client_salt = utils.quote(Random.get_random_bytes(16).hex())
         return self.client_salt
 
     def exchange_session_key(self):
