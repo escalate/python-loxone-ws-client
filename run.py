@@ -58,8 +58,8 @@ class LoxoneClientProtocol(WebSocketClientProtocol):
         if isBinary:
             print('Binary message received: {0} bytes'.format(len(payload)))
             self.next_msg_header = MessageHeader(payload)
-            print('Identifier ' + str(self.next_msg_header.identifier))
-            print('Payload length: ' + str(self.next_msg_header.payload_length))
+            print('Identifier: {0}'.format(self.next_msg_header.identifier))
+            print('Payload length: {0}'.format(self.next_msg_header.payload_length))
         else:
             print('Text message received: {0}'.format(payload.decode('utf8')))
             if self.next_msg_header.payload_length == len(payload):
@@ -80,7 +80,7 @@ class LoxoneClientProtocol(WebSocketClientProtocol):
                 if msg.control_type == 'getkey2' and msg.code != 200:
                     print('Salt and key not received for user (status code {0})'.format(msg.code))
                 if msg.control_type == 'unknown':
-                    print('Unknown control ' + msg.control)
+                    print('Unknown control {0}'.format(msg.control))
             else:
                 print('ERROR: Promised length of payload does not match')
 
