@@ -224,3 +224,7 @@ class TokenEnc(object):
                              AES.MODE_CBC,
                              self.client_aes_iv)
         return self.zero_byte_unpadding(cipher_aes.decrypt(enc_cmd_part), AES.block_size).decode('utf8')
+
+    def get_key(self):
+        print('Get key')
+        return 'jdev/sys/getkey'

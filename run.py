@@ -19,6 +19,11 @@ class LoxoneClientProtocol(WebSocketClientProtocol):
     token_enc = TokenEnc()
     next_msg_header = None
 
+    async def refresh_token_periodical(self, interval):
+        while True:
+            await asyncio.sleep(interval)
+            self.sendMessage(self.token_enc.encrypt_command(self.token_enc.get_key()))
+
     def onConnect(self, response):
         print('Server connected: {0}'.format(response.peer))
         print('Version: {0}'.format(response.version))
@@ -84,8 +89,15 @@ class LoxoneClientProtocol(WebSocketClientProtocol):
                     self.token_enc.client_token_valid_until = msg.value.get('validUntil')
                     self.token_enc.client_token_rights = msg.value.get('tokenRights')
                     self.token_enc.client_token_unsecure_pass = msg.value.get('unsecurePass')
+                    event_loop = asyncio.get_event_loop()
+                    event_loop.create_task(self.refresh_token_periodical(15))
                 if msg.control_type == 'gettoken' and msg.code != 200:
                     print('Token not received (status code {0})'.format(msg.code))
+                if msg.control_type == 'getkey' and msg.code == 200:
+                    print('Key received')
+                    self.token_enc.client_token_key = msg.value
+                if msg.control_type == 'getkey' and msg.code != 200:
+                    print('Key not received (status code {0})'.format(msg.code))
                 if msg.control_type == 'unknown':
                     print('Unknown control {0}'.format(msg.control))
             else:

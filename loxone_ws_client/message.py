@@ -25,6 +25,8 @@ class Message(object):
             return 'keyexchange'
         elif search(r'j?dev\/sys\/getkey2\/', self.control) is not None:
             return 'getkey2'
+        elif search(r'j?dev\/sys\/getkey', self.control) is not None:
+            return 'getkey'
         elif search(r'j?dev\/sys\/gettoken\/', self.control) is not None:
             return 'gettoken'
         elif search(r'j?dev\/sys\/enc\/', self.control) is not None:
