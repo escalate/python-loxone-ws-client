@@ -34,6 +34,10 @@ class TokenEnc(object):
         self.client_token_rights = None
         self.client_token_unsecure_pass = None
 
+        self.generate_aes256_key()
+        self.generate_aes_iv()
+        self.generate_salt()
+
     def test_connection(self):
         print('Ensure the MiniServer is reachable')
         req = get('http://{host}:{port}/jdev/cfg/api'.format(

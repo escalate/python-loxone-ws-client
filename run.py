@@ -40,17 +40,8 @@ class LoxoneClientProtocol(WebSocketClientProtocol):
         public_key = self.token_enc.get_public_key()
         print(public_key)
 
-        aes_key = self.token_enc.generate_aes256_key()
-        print(aes_key)
-
-        aes_iv = self.token_enc.generate_aes_iv()
-        print(aes_iv)
-
         session_key = self.token_enc.generate_session_key()
         print(session_key)
-
-        salt = self.token_enc.generate_salt()
-        print(salt)
 
         self.sendMessage(self.token_enc.exchange_session_key())
         self.sendMessage(self.token_enc.encrypt_command(self.token_enc.get_key_and_salt()))
