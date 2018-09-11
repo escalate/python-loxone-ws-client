@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import json
-from base64 import b64encode
+from base64 import b64decode, b64encode
 from binascii import a2b_hex
 from datetime import datetime, timedelta
+from re import sub
 
 from Crypto import Random
 from Crypto.Cipher import AES, PKCS1_v1_5
@@ -204,3 +205,22 @@ class TokenEnc(object):
             permission,
             uuid,
             utils.quote(info))
+
+    @staticmethod
+    def zero_byte_unpadding(padded_data, block_size):
+        pdata_len = len(padded_data)
+        if pdata_len % block_size:
+            raise ValueError("Input data is not padded")
+        return sub(b'\x00+$', b'', padded_data)
+
+    def decrypt_command(self, cmd):
+        print('Decrypt command')
+        if type(cmd) != str:
+            raise TypeError(
+                'Wrong type for "cmd" paramater. Expect Str got {0}.'.format(type(cmd)))
+
+        enc_cmd_part = b64decode(utils.unquote(cmd[13:]).encode('utf8'))
+        cipher_aes = AES.new(self.client_aes_key,
+                             AES.MODE_CBC,
+                             self.client_aes_iv)
+        return self.zero_byte_unpadding(cipher_aes.decrypt(enc_cmd_part), AES.block_size).decode('utf8')
