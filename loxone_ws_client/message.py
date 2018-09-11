@@ -15,17 +15,19 @@ class Message(object):
         if self.data.get('code', None) is not None:
             self.code = int(self.data.get('code', None))
         self.control = self.data.get('control', None)
+        self.control_type = self.discover_control_type()
         self.value = self.data.get('value', None)
 
+    def discover_control_type(self):
         if self.control == 'Auth':
-            self.control_type = 'auth'
+            return 'auth'
         elif match(r'^j?dev\/sys\/keyexchange\/', self.control) is not None:
-            self.control_type = 'keyexchange'
+            return 'keyexchange'
         elif match(r'^j?dev\/sys\/getkey2\/', self.control) is not None:
-            self.control_type = 'getkey2'
+            return 'getkey2'
         elif match(r'^j?dev\/sys\/gettoken\/', self.control) is not None:
-            self.control_type = 'gettoken'
+            return 'gettoken'
         elif match(r'^j?dev\/sys\/enc\/', self.control) is not None:
-            self.control_type = 'enc'
+            return 'enc'
         else:
-            self.control_type = 'unknown'
+            return 'unknown'
