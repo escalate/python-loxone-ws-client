@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import json
+import logging
 from base64 import b64decode, b64encode
 from binascii import a2b_hex
 from datetime import datetime, timedelta
@@ -13,6 +14,8 @@ from Crypto.Hash import HMAC, SHA1
 from Crypto.PublicKey import RSA
 from Crypto.Util.py3compat import bchr
 from requests import codes, get, utils
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class TokenEnc(object):
@@ -44,7 +47,7 @@ class TokenEnc(object):
         self.generate_salt()
 
     def test_connection(self):
-        print('Ensure the MiniServer is reachable')
+        _LOGGER.info('Ensure the MiniServer is reachable')
         req = get('http://{host}:{port}/jdev/cfg/api'.format(
             host=self.miniserver_host,
             port=self.miniserver_port),
@@ -59,7 +62,7 @@ class TokenEnc(object):
         return data.replace('\'', '"')
 
     def get_miniserver_snr(self):
-        print('Get MiniServer serial number')
+        _LOGGER.info('Get MiniServer serial number')
         req = get('http://{host}:{port}/jdev/cfg/api'.format(
             host=self.miniserver_host,
             port=self.miniserver_port),
@@ -70,7 +73,7 @@ class TokenEnc(object):
             return miniserver_api.get('snr')
 
     def get_miniserver_version(self):
-        print('Get MiniServer version')
+        _LOGGER.info('Get MiniServer version')
         req = get('http://{host}:{port}/jdev/cfg/api'.format(
             host=self.miniserver_host,
             port=self.miniserver_port),
@@ -87,7 +90,7 @@ class TokenEnc(object):
             .replace('-----END CERTIFICATE-----', "\n-----END CERTIFICATE-----")
 
     def get_public_key(self):
-        print('Get MiniServer public key')
+        _LOGGER.info('Get MiniServer public key')
         # Format: X.509 encoded key in ANS.1
         req = get('http://{host}:{port}/jdev/sys/getPublicKey'.format(
             host=self.miniserver_host,
@@ -99,7 +102,7 @@ class TokenEnc(object):
             return self.miniserver_public_key
 
     def generate_aes256_key(self):
-        print('Generate AES-256 key')
+        _LOGGER.info('Generate AES-256 key')
         secret = Random.get_random_bytes(32)
         key = Random.get_random_bytes(32)
         iv = Random.new().read(AES.block_size)
@@ -108,12 +111,12 @@ class TokenEnc(object):
         return self.client_aes_key
 
     def generate_aes_iv(self):
-        print('Generate random AES IV (16 byte)')
+        _LOGGER.info('Generate random AES IV (16 byte)')
         self.client_aes_iv = Random.get_random_bytes(16)
         return self.client_aes_iv
 
     def generate_session_key(self):
-        print('Generate session key by RSA encrypt the "AES-256 key + AES IV" with the MiniServer public key')
+        _LOGGER.info('Generate session key')
         rsa_key = RSA.importKey(self.miniserver_public_key)
         cipher_rsa = PKCS1_v1_5.new(rsa_key)
         session_key = self.client_aes_key+b':'+self.client_aes_iv
@@ -122,26 +125,26 @@ class TokenEnc(object):
         return self.client_session_key
 
     def generate_salt(self):
-        print('Generate salt')
+        _LOGGER.info('Generate salt')
         self.client_salt_valid_until = datetime.now() + timedelta(hours=1)
         self.client_salt_usage_count = 0
         self.client_salt = Random.get_random_bytes(16).hex()
         return self.client_salt
 
     def new_salt_needed(self):
-        print('New salt needed?')
+        _LOGGER.info('New salt needed?')
         if datetime.now() >= self.client_salt_valid_until:
-            print('Salt validity time reached. New salt needed.')
+            _LOGGER.info('Salt validity time reached. New salt needed.')
             return True
         elif self.client_salt_usage_count >= self.client_salt_usage_max:
-            print('Salt max usage count reached. New salt needed.')
+            _LOGGER.info('Salt max usage count reached. New salt needed.')
             return True
         else:
-            print('Salt okay. Current salt used.')
+            _LOGGER.info('Salt okay. Current salt used.')
             return False
 
     def exchange_session_key(self):
-        print('Exchange session key')
+        _LOGGER.info('Exchange session key')
         return b'jdev/sys/keyexchange/'+self.client_session_key
 
     @staticmethod
@@ -151,7 +154,7 @@ class TokenEnc(object):
         return data_to_pad + padding
 
     def encrypt_command(self, cmd):
-        print('Encrypt command')
+        _LOGGER.info('Encrypt command')
         if type(cmd) != str:
             raise TypeError(
                 'Wrong type for "cmd" paramater. Expect Str got {0}.'.format(type(cmd)))
@@ -173,11 +176,11 @@ class TokenEnc(object):
         return enc_cmd
 
     def get_key_and_salt(self):
-        print('Get key and salt for user')
+        _LOGGER.info('Get key and salt for user')
         return 'jdev/sys/getkey2/{0}'.format(self.miniserver_username)
 
     def hash_password(self):
-        print('Hash user password')
+        _LOGGER.info('Hash user password')
         hash_sha = SHA1.new()
         hash_sha.update('{0}:{1}'.format(
             self.miniserver_password,
@@ -185,7 +188,7 @@ class TokenEnc(object):
         return hash_sha.hexdigest().upper()
 
     def hash_credential(self):
-        print('Hash credential')
+        _LOGGER.info('Hash credential')
         pw_hash = self.hash_password()
         hash_hmac = HMAC.new(a2b_hex(self.miniserver_user_key), digestmod=SHA1)
         hash_hmac.update('{0}:{1}'.format(
@@ -194,7 +197,7 @@ class TokenEnc(object):
         return hash_hmac.hexdigest()
 
     def get_token(self):
-        print('Get token')
+        _LOGGER.info('Get token')
         credential_hash = self.hash_credential()
         permission = 2
         uuid = 'd8432922-c1ce-480a-8a01669ef2c02c20'
@@ -214,7 +217,7 @@ class TokenEnc(object):
         return sub(b'\x00+$', b'', padded_data)
 
     def decrypt_command(self, cmd):
-        print('Decrypt command')
+        _LOGGER.info('Decrypt command')
         if type(cmd) != str:
             raise TypeError(
                 'Wrong type for "cmd" paramater. Expect Str got {0}.'.format(type(cmd)))
@@ -226,16 +229,16 @@ class TokenEnc(object):
         return self.zero_byte_unpadding(cipher_aes.decrypt(enc_cmd_part), AES.block_size).decode('utf8')
 
     def get_key(self):
-        print('Get key')
+        _LOGGER.info('Get key')
         return 'jdev/sys/getkey'
 
     def hash_token(self):
-        print('Hash token')
+        _LOGGER.info('Hash token')
         hash_hmac = HMAC.new(a2b_hex(self.client_token_key), digestmod=SHA1)
         hash_hmac.update(self.client_token.encode('utf8'))
         return hash_hmac.hexdigest()
 
     def refresh_token(self):
-        print('Refresh token')
+        _LOGGER.info('Refresh token')
         token_hash = self.hash_token()
         return 'jdev/sys/refreshtoken/{0}/{1}'.format(token_hash, self.miniserver_username)
