@@ -21,15 +21,15 @@ class Message(object):
     def discover_control_type(self):
         if self.control == 'Auth':
             return 'auth'
-        elif search(r'j?dev\/sys\/keyexchange\/', self.control) is not None:
-            return 'keyexchange'
+        elif search(r'j?dev\/sys\/enc\/', self.control) is not None:
+            return 'enc'
         elif search(r'j?dev\/sys\/getkey2\/', self.control) is not None:
             return 'getkey2'
         elif search(r'j?dev\/sys\/getkey', self.control) is not None:
             return 'getkey'
         elif search(r'j?dev\/sys\/gettoken\/', self.control) is not None:
             return 'gettoken'
-        elif search(r'j?dev\/sys\/enc\/', self.control) is not None:
-            return 'enc'
+        elif search(r'j?dev\/sys\/keyexchange\/', self.control) is not None:
+            return 'keyexchange'
         else:
             return 'unknown'
