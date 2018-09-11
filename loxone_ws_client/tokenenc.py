@@ -228,3 +228,14 @@ class TokenEnc(object):
     def get_key(self):
         print('Get key')
         return 'jdev/sys/getkey'
+
+    def hash_token(self):
+        print('Hash token')
+        hash_hmac = HMAC.new(a2b_hex(self.client_token_key), digestmod=SHA1)
+        hash_hmac.update(self.client_token.encode('utf8'))
+        return hash_hmac.hexdigest()
+
+    def refresh_token(self):
+        print('Refresh token')
+        token_hash = self.hash_token()
+        return 'jdev/sys/refreshtoken/{0}/{1}'.format(token_hash, self.miniserver_username)

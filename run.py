@@ -96,8 +96,15 @@ class LoxoneClientProtocol(WebSocketClientProtocol):
                 if msg.control_type == 'getkey' and msg.code == 200:
                     print('Key received')
                     self.token_enc.client_token_key = msg.value
+                    self.sendMessage(self.token_enc.encrypt_command(self.token_enc.refresh_token()))
                 if msg.control_type == 'getkey' and msg.code != 200:
                     print('Key not received (status code {0})'.format(msg.code))
+                if msg.control_type == 'refreshtoken' and msg.code == 200:
+                    print('Token refreshed')
+                    self.token_enc.client_token_valid_until = msg.value.get('validUntil')
+                    self.token_enc.client_token_unsecure_pass = msg.value.get('unsecurePass')
+                if msg.control_type == 'refreshtoken' and msg.code != 200:
+                    print('Token not refreshed (status code {0})'.format(msg.code))
                 if msg.control_type == 'unknown':
                     print('Unknown control {0}'.format(msg.control))
             else:

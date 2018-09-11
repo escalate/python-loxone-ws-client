@@ -31,5 +31,7 @@ class Message(object):
             return 'gettoken'
         elif search(r'j?dev\/sys\/keyexchange\/', self.control) is not None:
             return 'keyexchange'
+        elif search(r'j?dev\/sys\/refreshtoken\/', self.control) is not None:
+            return 'refreshtoken'
         else:
             return 'unknown'
