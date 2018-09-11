@@ -68,7 +68,6 @@ class LoxoneClientProtocol(WebSocketClientProtocol):
                 if msg.control_type == 'enc':
                     print('Encrypted command received')
                     msg.control = self.token_enc.decrypt_command(msg.control)
-                    msg.control_type = msg.discover_control_type()
                 if msg.control_type == 'auth' and msg.code == 420:
                     print('Authentication failed (status code {0})'.format(msg.code))
                 if msg.control_type == 'keyexchange' and msg.code == 200:

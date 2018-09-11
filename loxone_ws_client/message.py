@@ -9,16 +9,32 @@ class Message(object):
 
     def __init__(self, payload):
         self._raw_data = loads(payload.decode('utf8'))
-        self.data = self._raw_data.get('LL')
-        if self.data.get('Code', None) is not None:
-            self.code = int(self.data.get('Code', None))
-        if self.data.get('code', None) is not None:
-            self.code = int(self.data.get('code', None))
-        self.control = self.data.get('control', None)
-        self.control_type = self.discover_control_type()
-        self.value = self.data.get('value', None)
 
-    def discover_control_type(self):
+    @property
+    def data(self):
+        return self._raw_data.get('LL')
+
+    @property
+    def code(self):
+        if self.data.get('Code', None) is not None:
+            return int(self.data.get('Code', None))
+        if self.data.get('code', None) is not None:
+            return int(self.data.get('code', None))
+
+    @property
+    def control(self):
+        return self.data.get('control', None)
+
+    @control.setter
+    def control(self, value):
+        self._raw_data['LL']['control'] = value
+
+    @property
+    def value(self):
+        return self.data.get('value', None)
+
+    @property
+    def control_type(self):
         if self.control == 'Auth':
             return 'auth'
         elif search(r'j?dev\/sys\/enc\/', self.control) is not None:
