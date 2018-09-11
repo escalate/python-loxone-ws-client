@@ -167,10 +167,9 @@ class TokenEnc(object):
         permission = 2
         uuid = 'd8432922-c1ce-480a-8a01669ef2c02c20'
         info = 'python-loxone-ws-client'
-        test = 'jdev/sys/gettoken/{0}/{1}/{2}/{3}/{4}'.format(
+        return 'jdev/sys/gettoken/{0}/{1}/{2}/{3}/{4}'.format(
             credential_hash,
             self.miniserver_username,
             permission,
             uuid,
             utils.quote(info))
-        return test
