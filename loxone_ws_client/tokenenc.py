@@ -133,8 +133,10 @@ class TokenEnc(object):
 
     def encrypt_command(self, cmd):
         print('Encrypt command')
-        if type(cmd) == bytes:
-            cmd = cmd.decode('utf8')
+        if type(cmd) != str:
+            raise TypeError(
+                'Wrong type for "cmd" paramater. Expect Str got {0}.'.format(type(cmd)))
+
         cipher_aes = AES.new(self.client_aes_key,
                              AES.MODE_CBC,
                              self.client_aes_iv)
