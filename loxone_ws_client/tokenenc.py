@@ -4,6 +4,7 @@
 import json
 from base64 import b64encode
 from binascii import a2b_hex
+from datetime import datetime, timedelta
 
 from Crypto import Random
 from Crypto.Cipher import AES, PKCS1_v1_5
@@ -28,6 +29,9 @@ class TokenEnc(object):
         self.client_aes_iv = None
         self.client_session_key = None
         self.client_salt = None
+        self.client_salt_valid_until = None
+        self.client_salt_usage_count = 0
+        self.client_salt_usage_max = 20
         self.client_token = None
         self.client_token_key = None
         self.client_token_valid_until = None
@@ -118,8 +122,22 @@ class TokenEnc(object):
 
     def generate_salt(self):
         print('Generate salt')
+        self.client_salt_valid_until = datetime.now() + timedelta(hours=1)
+        self.client_salt_usage_count = 0
         self.client_salt = Random.get_random_bytes(16).hex()
         return self.client_salt
+
+    def new_salt_needed(self):
+        print('New salt needed?')
+        if datetime.now() >= self.client_salt_valid_until:
+            print('Salt validity time reached. New salt needed.')
+            return True
+        elif self.client_salt_usage_count >= self.client_salt_usage_max:
+            print('Salt max usage count reached. New salt needed.')
+            return True
+        else:
+            print('Salt okay. Current salt used.')
+            return False
 
     def exchange_session_key(self):
         print('Exchange session key')
@@ -137,11 +155,18 @@ class TokenEnc(object):
             raise TypeError(
                 'Wrong type for "cmd" paramater. Expect Str got {0}.'.format(type(cmd)))
 
+        salt_part = 'salt/{0}'.format(self.client_salt)
+        self.client_salt_usage_count += 1
+        if self.new_salt_needed() == True:
+            salt_part = 'nextSalt/{0}/'.format(self.client_salt)
+            self.generate_salt()
+            salt_part += self.client_salt
+
         cipher_aes = AES.new(self.client_aes_key,
                              AES.MODE_CBC,
                              self.client_aes_iv)
         enc_cmd_part = cipher_aes.encrypt(self.zero_byte_paddding(
-            'salt/{0}/{1}'.format(self.client_salt, cmd).encode('utf8'), AES.block_size))
+            '{0}/{1}'.format(salt_part, cmd).encode('utf8'), AES.block_size))
         enc_cmd = 'jdev/sys/enc/{0}'.format(
             utils.quote(b64encode(enc_cmd_part))).encode('utf8')
         return enc_cmd
