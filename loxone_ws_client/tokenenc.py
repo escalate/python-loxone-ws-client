@@ -118,7 +118,7 @@ class TokenEnc(object):
 
     def generate_salt(self):
         print('Generate salt')
-        self.client_salt = utils.quote(Random.get_random_bytes(16).hex())
+        self.client_salt = Random.get_random_bytes(16).hex()
         return self.client_salt
 
     def exchange_session_key(self):
