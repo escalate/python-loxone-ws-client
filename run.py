@@ -8,7 +8,7 @@ from os import environ
 from autobahn.asyncio.websocket import (WebSocketClientFactory,
                                         WebSocketClientProtocol)
 
-from loxone_ws_client import Message, MessageHeader, TokenEnc
+from loxone_websocket_client import Message, MessageHeader, TokenEnc
 
 _LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
