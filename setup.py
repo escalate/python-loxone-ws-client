@@ -3,9 +3,14 @@
 
 from setuptools import setup, find_packages
 
+with open('README.md') as f:
+    long_description = f.read()
+
 setup(name='loxone_websocket_client',
-      version='0.1',
+      version='0.3',
       description='Loxone Websocket Client Library',
+      long_description=long_description,
+      long_description_content_type='text/markdown',
       url='https://github.com/escalate/python-loxone-ws-client',
       author='Felix Börner',
       author_email='github@felix-boerner.de',
