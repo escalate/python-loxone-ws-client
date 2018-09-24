@@ -5,7 +5,7 @@ from re import search
 from json import loads
 
 
-class Message(object):
+class Message:
 
     def __init__(self, payload):
         self._raw_data = loads(payload.decode('utf8'))

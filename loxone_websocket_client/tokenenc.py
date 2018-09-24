@@ -18,7 +18,7 @@ from requests import codes, get, utils
 _LOGGER = logging.getLogger(__name__)
 
 
-class TokenEnc(object):
+class TokenEnc:
 
     def __init__(self, **kwargs):
         self.request_timeout = kwargs.get('request_timeout', 5)

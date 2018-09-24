@@ -4,7 +4,7 @@
 from struct import unpack
 
 
-class MessageHeader(object):
+class MessageHeader:
 
     def __init__(self, payload):
         """
