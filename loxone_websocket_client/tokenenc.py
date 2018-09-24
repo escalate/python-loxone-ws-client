@@ -242,3 +242,8 @@ class TokenEnc:
         _LOGGER.info('Refresh token')
         token_hash = self.hash_token()
         return 'jdev/sys/refreshtoken/{0}/{1}'.format(token_hash, self.miniserver_username)
+
+    def get_loxapp3_json(self):
+        _LOGGER.info('Get LoxAPP3.json')
+        # Command can't be encrypted
+        return 'data/LoxAPP3.json'.encode('utf8')

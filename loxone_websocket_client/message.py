@@ -51,5 +51,7 @@ class Message:
             return 'keyexchange'
         elif search(r'j?dev\/sys\/refreshtoken\/', self.control) is not None:
             return 'refreshtoken'
+        elif self._raw_data.get('lastModified') is not None:
+            return 'loxapp3'
         else:
             return 'unknown'

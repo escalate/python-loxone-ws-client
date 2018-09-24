@@ -83,6 +83,7 @@ class ClientProtocol(WebSocketClientProtocol):
                     self.token_enc.client_token_rights = msg.value.get('tokenRights')
                     self.token_enc.client_token_unsecure_pass = msg.value.get('unsecurePass')
                     self.factory.loop.create_task(self.refresh_token_periodical(15))
+                    self.sendMessage(self.token_enc.get_loxapp3_json())
                 if msg.control_type == 'gettoken' and msg.code != 200:
                     _LOGGER.info('Token not received (status code {0})'.format(msg.code))
                 if msg.control_type == 'getkey' and msg.code == 200:
@@ -97,6 +98,8 @@ class ClientProtocol(WebSocketClientProtocol):
                     self.token_enc.client_token_unsecure_pass = msg.value.get('unsecurePass')
                 if msg.control_type == 'refreshtoken' and msg.code != 200:
                     _LOGGER.info('Token not refreshed (status code {0})'.format(msg.code))
+                if msg.control_type == 'loxapp3' and msg.code == 0:
+                    _LOGGER.info('LoxAPP3.json received')
                 if msg.control_type == 'unknown':
                     _LOGGER.info('Unknown control {0}'.format(msg.control))
             else:
