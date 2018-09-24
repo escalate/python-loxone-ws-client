@@ -16,10 +16,12 @@ class Message:
 
     @property
     def code(self):
-        if self.data.get('Code', None) is not None:
-            return int(self.data.get('Code', None))
-        if self.data.get('code', None) is not None:
-            return int(self.data.get('code', None))
+        if self.data.get('Code') is not None:
+            return int(self.data.get('Code'))
+        if self.data.get('code') is not None:
+            return int(self.data.get('code'))
+        else:
+            return 0
 
     @property
     def control(self):
