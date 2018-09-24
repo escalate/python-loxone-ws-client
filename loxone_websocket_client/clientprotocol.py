@@ -15,8 +15,8 @@ _LOGGER = logging.getLogger(__name__)
 
 class ClientProtocol(WebSocketClientProtocol):
 
-    token_enc = TokenEnc()
     next_msg_header = None
+    token_enc = TokenEnc()
 
     async def refresh_token_periodical(self, interval):
         while True:
