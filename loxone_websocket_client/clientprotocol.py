@@ -101,7 +101,7 @@ class ClientProtocol(WebSocketClientProtocol):
                 if msg.control_type == 'loxapp3' and msg.code == 0:
                     _LOGGER.info('LoxAPP3.json received')
                 if msg.control_type == 'unknown':
-                    _LOGGER.info('Unknown control {0}'.format(msg.control))
+                    _LOGGER.info('Unknown control "{0}" with value "{1}" (status code {2})'.format(msg.control, msg.value, msg.code))
             else:
                 _LOGGER.error('ERROR: Promised length of payload does not match')
 
