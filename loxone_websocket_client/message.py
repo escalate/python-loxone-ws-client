@@ -12,7 +12,7 @@ class Message:
 
     @property
     def data(self):
-        return self._raw_data.get('LL')
+        return self._raw_data.get('LL', {})
 
     @property
     def code(self):
