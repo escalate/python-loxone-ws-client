@@ -25,7 +25,7 @@ class Message:
 
     @property
     def control(self):
-        return self.data.get('control', None)
+        return self.data.get('control', '')
 
     @control.setter
     def control(self, value):
@@ -33,7 +33,7 @@ class Message:
 
     @property
     def value(self):
-        return self.data.get('value', None)
+        return self.data.get('value', '')
 
     @property
     def control_type(self):
