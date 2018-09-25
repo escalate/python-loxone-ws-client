@@ -8,6 +8,7 @@ from autobahn.asyncio.websocket import WebSocketClientProtocol
 
 from .message import Message
 from .messageheader import MessageHeader
+from .miniserver import MiniServer
 from .token import Token
 from .tokenenc import TokenEnc
 
@@ -27,20 +28,20 @@ class ClientProtocol(WebSocketClientProtocol):
     def onConnect(self, response):
         _LOGGER.info('Server connected: {0}'.format(response.peer))
         _LOGGER.debug(response)
-        self.token_enc.miniserver_host = self.factory.host
-        self.token_enc.miniserver_port = self.factory.port
-        self.token_enc.miniserver_username = self.factory.username
-        self.token_enc.miniserver_password = self.factory.password
 
     def onOpen(self):
         _LOGGER.info('WebSocket connection open')
-        snr = self.token_enc.get_miniserver_snr()
-        _LOGGER.info('MiniServer serial number: {0}'.format(snr))
 
-        version = self.token_enc.get_miniserver_version()
-        _LOGGER.info('MiniServer version: {0}'.format(version))
+        self.token_enc.miniserver = MiniServer(
+            self.factory.host,
+            self.factory.port,
+            self.factory.username,
+            self.factory.password)
+        _LOGGER.info('MiniServer serial number: {0}'.format(
+            self.token_enc.miniserver.snr))
+        _LOGGER.info('MiniServer version: {0}'.format(
+            self.token_enc.miniserver.version))
 
-        self.token_enc.get_public_key()
         self.token_enc.generate_session_key()
 
         self.sendMessage(self.token_enc.exchange_session_key())
