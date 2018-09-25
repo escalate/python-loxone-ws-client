@@ -37,10 +37,6 @@ class TokenEnc:
         self.client_salt_usage_count = 0
         self.client_salt_usage_max = 20
         self.client_token = None
-        self.client_token_key = None
-        self.client_token_valid_until = None
-        self.client_token_rights = None
-        self.client_token_unsecure_pass = None
 
         self.generate_aes256_key()
         self.generate_aes_iv()
@@ -234,8 +230,8 @@ class TokenEnc:
 
     def hash_token(self):
         _LOGGER.info('Hash token')
-        hash_hmac = HMAC.new(a2b_hex(self.client_token_key), digestmod=SHA1)
-        hash_hmac.update(self.client_token.encode('utf8'))
+        hash_hmac = HMAC.new(self.client_token.key, digestmod=SHA1)
+        hash_hmac.update(self.client_token.value)
         return hash_hmac.hexdigest()
 
     def refresh_token(self):

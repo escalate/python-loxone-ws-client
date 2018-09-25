@@ -8,6 +8,7 @@ from autobahn.asyncio.websocket import WebSocketClientProtocol
 
 from .message import Message
 from .messageheader import MessageHeader
+from .token import Token
 from .tokenenc import TokenEnc
 
 _LOGGER = logging.getLogger(__name__)
@@ -77,25 +78,20 @@ class ClientProtocol(WebSocketClientProtocol):
                     _LOGGER.info('Salt and key not received for user (status code {0})'.format(msg.code))
                 if msg.control_type == 'gettoken' and msg.code == 200:
                     _LOGGER.info('Token received')
-                    self.token_enc.client_token = msg.value.get('token')
-                    self.token_enc.client_token_key = msg.value.get('key')
-                    self.token_enc.client_token_valid_until = msg.value.get('validUntil')
-                    self.token_enc.client_token_rights = msg.value.get('tokenRights')
-                    self.token_enc.client_token_unsecure_pass = msg.value.get('unsecurePass')
+                    self.token_enc.client_token = Token(msg.value)
                     self.factory.loop.create_task(self.refresh_token_periodical(15))
                     self.sendMessage(self.token_enc.get_loxapp3_json())
                 if msg.control_type == 'gettoken' and msg.code != 200:
                     _LOGGER.info('Token not received (status code {0})'.format(msg.code))
                 if msg.control_type == 'getkey' and msg.code == 200:
                     _LOGGER.info('Key received')
-                    self.token_enc.client_token_key = msg.value
+                    self.token_enc.client_token.key = msg.value
                     self.sendMessage(self.token_enc.encrypt_command(self.token_enc.refresh_token()))
                 if msg.control_type == 'getkey' and msg.code != 200:
                     _LOGGER.info('Key not received (status code {0})'.format(msg.code))
                 if msg.control_type == 'refreshtoken' and msg.code == 200:
                     _LOGGER.info('Token refreshed')
-                    self.token_enc.client_token_valid_until = msg.value.get('validUntil')
-                    self.token_enc.client_token_unsecure_pass = msg.value.get('unsecurePass')
+                    self.token_enc.client_token.refresh(msg.value)
                 if msg.control_type == 'refreshtoken' and msg.code != 200:
                     _LOGGER.info('Token not refreshed (status code {0})'.format(msg.code))
                 if msg.control_type == 'loxapp3' and msg.code == 0:
