@@ -80,7 +80,7 @@ class ClientProtocol(WebSocketClientProtocol):
                 if msg.control_type == 'gettoken' and msg.code == 200:
                     _LOGGER.info('Token received')
                     self.token_enc.client_token = Token(msg.value)
-                    self.factory.loop.create_task(self.refresh_token_periodical(15))
+                    self.factory.loop.create_task(self.refresh_token_periodical(self.token_enc.client_token.seconds_to_expire()))
                     self.sendMessage(self.token_enc.get_loxapp3_json())
                 if msg.control_type == 'gettoken' and msg.code != 200:
                     _LOGGER.info('Token not received (status code {0})'.format(msg.code))

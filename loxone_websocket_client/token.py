@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from binascii import a2b_hex
+from datetime import datetime
+from math import ceil
+from time import time
 
 
 class Token:
@@ -23,7 +26,7 @@ class Token:
 
     @property
     def valid_until(self):
-        return self._raw_data.get('validUntil')
+        return datetime(2009, 1, 1).timestamp() + float(self._raw_data.get('validUntil'))
 
     @valid_until.setter
     def valid_until(self, value):
@@ -44,3 +47,6 @@ class Token:
     def refresh(self, payload):
         self.valid_until = payload.get('validUntil')
         self.unsecure_pass = payload.get('unsecurePass')
+
+    def seconds_to_expire(self):
+        return self.valid_until - ceil(time())
