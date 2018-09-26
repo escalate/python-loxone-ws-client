@@ -18,7 +18,7 @@ _LOGGER = logging.getLogger(__name__)
 class ClientProtocol(WebSocketClientProtocol):
 
     next_msg_header = None
-    token_enc = TokenEnc()
+    token_enc = None
 
     async def refresh_token_periodical(self, interval):
         while True:
@@ -28,6 +28,7 @@ class ClientProtocol(WebSocketClientProtocol):
     def onConnect(self, response):
         _LOGGER.info('Server connected: {0}'.format(response.peer))
         _LOGGER.debug(response)
+        self.token_enc = TokenEnc()
 
     def onOpen(self):
         _LOGGER.info('WebSocket connection open')
