@@ -8,11 +8,11 @@ from json import loads
 class Message:
 
     def __init__(self, payload):
-        self._raw_data = loads(payload.decode('utf8'))
+        self.raw_data = loads(payload.decode('utf8'))
 
     @property
     def data(self):
-        return self._raw_data.get('LL', {})
+        return self.raw_data.get('LL', {})
 
     @property
     def code(self):
@@ -29,7 +29,7 @@ class Message:
 
     @control.setter
     def control(self, value):
-        self._raw_data['LL']['control'] = value
+        self.raw_data['LL']['control'] = value
 
     @property
     def value(self):
@@ -51,7 +51,7 @@ class Message:
             return 'keyexchange'
         elif search(r'j?dev\/sys\/refreshtoken\/', self.control) is not None:
             return 'refreshtoken'
-        elif self._raw_data.get('lastModified') is not None:
+        elif self.raw_data.get('lastModified') is not None:
             return 'loxapp3'
         else:
             return 'unknown'

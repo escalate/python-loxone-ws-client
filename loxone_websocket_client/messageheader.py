@@ -16,6 +16,7 @@ class MessageHeader:
             UINT nLen;        // 32-Bit Unsigned Integer (little endian)
         } PACKED WsBinHdr;
         """
+        self.raw_data = payload
         self.bin_type, \
         self.identifier, \
         self.info, \
