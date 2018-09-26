@@ -23,8 +23,8 @@ class TokenEnc:
         self.miniserver = None
         self.miniserver_user_key = None
         self.miniserver_user_salt = None
-        self.client_aes_key = None
-        self.client_aes_iv = None
+        self.client_aes_key = self.generate_aes256_key()
+        self.client_aes_iv = self.generate_aes_iv()
         self.client_session_key = None
         self.client_salt = None
         self.client_salt_valid_until = None
@@ -32,8 +32,6 @@ class TokenEnc:
         self.client_salt_usage_max = 20
         self.client_token = None
 
-        self.generate_aes256_key()
-        self.generate_aes_iv()
         self.generate_salt()
 
     def generate_aes256_key(self):
@@ -42,13 +40,11 @@ class TokenEnc:
         key = Random.get_random_bytes(32)
         iv = Random.new().read(AES.block_size)
         cipher_aes = AES.new(key, AES.MODE_CBC, iv)
-        self.client_aes_key = cipher_aes.encrypt(secret)
-        return self.client_aes_key
+        return cipher_aes.encrypt(secret)
 
     def generate_aes_iv(self):
         _LOGGER.info('Generate random AES IV (16 byte)')
-        self.client_aes_iv = Random.get_random_bytes(16)
-        return self.client_aes_iv
+        return Random.get_random_bytes(16)
 
     def generate_session_key(self):
         _LOGGER.info('Generate session key')
