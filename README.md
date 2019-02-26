@@ -2,6 +2,6 @@
 
 Python Client for Loxone WebSocket API
 
-_This project is still work in progress_
+**This project is still work in progress**
 
-_Please contact me if you would like to contribute as a main developer._
+**Please contact me if you would like to contribute as a main developer.**
